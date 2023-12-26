@@ -1,6 +1,22 @@
-variable "bucket" {}
 variable "key" {}
-variable "region" {}
+variable "bucket" {}
+variable "environment" {}
+
+variable "region" {
+  default = "us-west-1"
+}
+variable "vpc_cidr" {
+  default = "10.0.0.0/16"
+}
+variable "public_subnet_cidr" {
+  default = "10.0.1.0/24"
+}
+variable "private_subnet_cidr" {
+  default = "10.0.2.0/24"
+}
+locals {
+  availability_zones = ["${var.region}a", "${var.region}b"]
+}
 
 terraform {
   backend "s3" {
@@ -21,7 +37,7 @@ terraform {
 provider "aws" {
   # No credentials explicitly set here because they come from either the
   # environment or the global credentials file.
-  region = "us-west-1"
+  region = var.region
   assume_role = {
     role_arn = "arn:aws:iam::249556908394:role/TerraformDeployer"
   }
