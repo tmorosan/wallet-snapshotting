@@ -1,6 +1,6 @@
 variable "key" {}
 variable "bucket" {}
-variable "environment" {}
+#variable "env" {}
 
 variable "region" {
   default = "us-west-1"
@@ -43,4 +43,6 @@ provider "aws" {
   }
 }
 
-
+module "vpc" {
+  source = "modules/vpc"
+}
