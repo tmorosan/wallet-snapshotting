@@ -1,0 +1,13 @@
+dist/
+src/
+build/
+node_modules/
+coverage/
+.idea/
+terraform/.terraform/*
+.rollup.cache/*
+.DS_Store
+tsconfig.tsbuildinfo
+yarn-error.log
+
+

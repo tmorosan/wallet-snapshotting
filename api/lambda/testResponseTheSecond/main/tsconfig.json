@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "esnext",
+    "baseUrl": ".",
+    "sourceMap": true,
+    "outDir": "./",
+    "preserveConstEnums": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true
+  },
+  "include": [".", "rollup.config.mjs"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+}

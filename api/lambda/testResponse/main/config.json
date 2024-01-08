@@ -1,0 +1,6 @@
+{
+  "name": "testResponseLambda",
+  "runtime": "nodejs18.x",
+  "timeout": "60",
+  "memory": "128"
+}
