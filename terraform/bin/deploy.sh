@@ -68,8 +68,16 @@ destroy () {
   fi
 }
 
+init () {
+  cd "$ROOT_DIR/terraform"
+  terraform init -backend-config="init.tfvars"
+}
+
 command=$1
 case $command in
+  init)
+    init
+    ;;
   apply)
     deploy apply
     ;;
