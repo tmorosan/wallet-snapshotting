@@ -3,7 +3,7 @@
 Lambda resolver example, structure is as follows:
 ```shell
 # Contains source code, config.json can be used to override default lambda config
-main/
+src/
   index.ts
   package.json
   tsconfig.json

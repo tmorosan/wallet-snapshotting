@@ -1,9 +1,16 @@
 # chose regional endpoint type because the only client (cc) will be in the same region ?
 # this should be v2 http api instead, as it is cheaper and we don't need the features of v1
 resource "aws_apigatewayv2_api" "api" {
-  name = "cc-api-${var.env}"
+  name          = "cc-api-${var.env}"
   protocol_type = "HTTP"
+  # this is not ideal, adding a lambda should only mean defining the route in the swagger file
+  body = templatefile(yamldecode(".${path.root}/api/swagger.yaml"),
+    {
+      "lambda_arn"            = var.lambdas["testResponseTheSecond"],
+#      "lambda_the_second_arn" = var.lambdas["testResponseTheSecond"],
+  })
 }
+
 
 #resource "aws_apigatewayv2_authorizer" "api_authorizer" {
 #  api_id          = ""

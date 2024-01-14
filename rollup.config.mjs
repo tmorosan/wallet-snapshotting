@@ -17,9 +17,9 @@ const format = "cjs";
 
 const config = [
   {
-    input: "index.ts",
+    input: "./src/index.ts",
     output: {
-      file: "../src/index.js",
+      file: "./src/index.js",
       sourcemap: true,
       format,
     },

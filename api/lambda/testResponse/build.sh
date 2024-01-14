@@ -1,0 +1,1 @@
+npm install && rollup -c "../../../rollup.config.mjs"

@@ -1,17 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "esnext",
+    "target": "es2018",
+    "module": "commonjs",
     "baseUrl": ".",
+    "types": [
+      "node"
+    ],
+    "lib": ["ESNext"],
+    "importHelpers": true,
     "sourceMap": true,
-    "outDir": "./",
     "preserveConstEnums": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "nodenext"
   },
-  "include": [".", "rollup.config.mjs"],
+  "include": [
+    ".",
+  ],
   "exclude": ["node_modules", "**/*.test.ts"]
 }

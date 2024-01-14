@@ -1,0 +1,27 @@
+openapi: "3.0.0"
+info:
+  version: "1.0"
+  title: "API"
+  description: "API endpoint example"
+paths:
+  "/test":
+    get:
+      operationId: "test-get-api"
+      tags:
+        - "cc-api"
+      description: "API endpoint example"
+      responses:
+        200:
+          description: "OK Response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      x-amazon-apigateway-integration:
+        uri: ${lambda_arn}
+        httpMethod: "GET"
+        type: "AWS_PROXY"
+        payloadFormatVersion: "1.0"

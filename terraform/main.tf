@@ -27,24 +27,25 @@ module "vpc" {
   source = "./modules/vpc"
   env = var.env
   region = var.region
-  vpc_cidr = var.vpc_cidr
-  public_subnets_cidr = var.public_subnets_cidr
-  private_subnets_cidr = var.private_subnets_cidr
+  cidr = var.vpc_cidr
+  resource_prefix = var.project
+  availability_zones = var.availability_zones
 }
 
 module "lambda" {
-  source = "./modules/lambda"
-  bucket = var.bucket
+  source = "./modules/nodejs-lambda"
   region = var.region
   env = var.env
-  lambdas = var.lambdas
+  security_group_id = module.vpc.default_security_group_id
+  subnet_ids = [for subnet in module.vpc.private_subnets : subnet.id]
+  resource_prefix = var.project
+  lambda_configs = var.lambda_configs
 }
 
 module "api" {
   source = "./modules/api"
   env = var.env
   region = var.region
-  vpc_arn = module.vpc.arn
   # change this to list of lambda arns
-  lambdas = module.lambda.lambdas
+  lambdas = module.lambda.lambda_arns
 }
