@@ -5,10 +5,8 @@ resource "aws_apigatewayv2_api" "api" {
   protocol_type = "HTTP"
   # this is not ideal, adding a lambda should only mean defining the route in the swagger file
   body = templatefile(yamldecode(".${path.root}/api/swagger.yaml"),
-    {
-      "lambda_arn"            = var.lambdas["testResponseTheSecond"],
-#      "lambda_the_second_arn" = var.lambdas["testResponseTheSecond"],
-  })
+    { for k, v in var.lambdas : "lambda_${k}" => v}
+  )
 }
 
 

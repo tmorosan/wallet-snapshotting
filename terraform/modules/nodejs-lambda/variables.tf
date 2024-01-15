@@ -31,3 +31,8 @@ variable "lambda_configs" {
   }))
   nullable = false
 }
+
+variable "lambda_global_env" {
+  type = map(string)
+  default = {}
+}

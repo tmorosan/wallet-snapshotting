@@ -21,7 +21,7 @@ paths:
                   message:
                     type: string
       x-amazon-apigateway-integration:
-        uri: ${lambda_arn}
+        uri: ${lambda_tmoro-example-testResponseLambda}
         httpMethod: "GET"
         type: "AWS_PROXY"
         payloadFormatVersion: "1.0"
