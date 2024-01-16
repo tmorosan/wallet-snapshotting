@@ -4,12 +4,21 @@ info:
   title: "API"
   description: "API endpoint example"
 paths:
-  "/test":
-    get:
-      operationId: "test-get-api"
+  "/collection":
+    post:
+      operationId: "test-post-api"
       tags:
-        - "cc-api"
-      description: "API endpoint example"
+        - "tmoro-example-api"
+      description: "API post endpoint example"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
       responses:
         200:
           description: "OK Response"
@@ -22,6 +31,28 @@ paths:
                     type: string
       x-amazon-apigateway-integration:
         uri: ${lambda_tmoro-example-testResponseLambda}
-        httpMethod: "GET"
+        httpMethod: "POST"
         type: "AWS_PROXY"
         payloadFormatVersion: "1.0"
+
+#        "/test":
+#          get:
+#            operationId: "test-get-api"
+#            tags:
+#              - "cc-api"
+#            description: "API endpoint example"
+#            responses:
+#              200:
+#                description: "OK Response"
+#                content:
+#                  application/json:
+#                    schema:
+#                      type: object
+#                      properties:
+#                        message:
+#                          type: string
+#            x-amazon-apigateway-integration:
+#              uri: ${lambda_tmoro-example-testResponseLambda}
+#              httpMethod: "GET"
+#              type: "AWS_PROXY"
+#              payloadFormatVersion: "1.0"

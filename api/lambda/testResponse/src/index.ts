@@ -19,12 +19,16 @@ const client = DynamoDBDocument.from(dynamodb);
 
 export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
     try {
+        console.log(JSON.stringify(event, null, "\t"));
+        const body = JSON.parse(event.body??"{}");
+        const name = body.name;
         const now = new Date().toISOString();
+
         const putCommand = {
             TableName: safeGetEnvVar("COLLECTION_TABLE"),
             Item: {
                 Id: randomUUID(),
-                Name: "test",
+                Name: name,
                 createdAt: now,
                 updatedAt: now,
             },

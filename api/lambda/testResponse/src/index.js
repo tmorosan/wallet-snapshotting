@@ -18,12 +18,15 @@ const dynamodb = new client_dynamodb_1.DynamoDBClient({
 const client = lib_dynamodb_1.DynamoDBDocument.from(dynamodb);
 async function handler(event) {
     try {
+        console.log(JSON.stringify(event, null, "\t"));
+        const body = JSON.parse(event.body ?? "{}");
+        const name = body.name;
         const now = new Date().toISOString();
         const putCommand = {
             TableName: safeGetEnvVar("COLLECTION_TABLE"),
             Item: {
                 Id: (0, crypto_1.randomUUID)(),
-                Name: "test",
+                Name: name,
                 createdAt: now,
                 updatedAt: now,
             },
