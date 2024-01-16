@@ -1,16 +1,21 @@
+# The dynamo policy is waay too permissive, but i'd need to refactor using a layered architecture
+# to add per lambda permissions (and make it look decent)
 variable "lambda_exec_policy" {
   description = "AWS managed policy that allows lambda execution and writing to cloudwatch logs"
-  default     = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-  type        = string
+  default     = [
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  ]
+  type        = list(string)
 }
 variable "region" {
-  type     = string
+  type = string
 }
 variable "env" {
-  type     = string
+  type = string
 }
 variable "security_group_id" {
-  type     = string
+  type = string
 }
 variable "subnet_ids" {
   type = list(string)
@@ -33,6 +38,6 @@ variable "lambda_configs" {
 }
 
 variable "lambda_global_env" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }

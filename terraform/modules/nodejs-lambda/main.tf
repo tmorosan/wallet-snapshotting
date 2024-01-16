@@ -20,7 +20,7 @@ resource "aws_lambda_function" "lambda" {
     subnet_ids         = var.subnet_ids
   }
   environment {
-    variables = merge(each.value.env, var.lambda_global_env)
+    variables = merge(each.value.env, var.lambda_global_env, { NODE_OPTIONS : "--enable-source-maps" })
   }
 }
 

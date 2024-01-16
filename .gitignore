@@ -1,5 +1,4 @@
 dist/
-src/
 build/
 node_modules/
 coverage/
@@ -9,5 +8,5 @@ terraform/.terraform/*
 .DS_Store
 tsconfig.tsbuildinfo
 yarn-error.log
-
+*.zip
 

@@ -15,8 +15,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  count      = length(var.lambda_exec_policy)
   role       = aws_iam_role.lambda_role.name
-  policy_arn = var.lambda_exec_policy
+  policy_arn = var.lambda_exec_policy[count.index]
 }
-
-# TO DO: Add permission to read/write dynamo db table

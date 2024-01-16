@@ -9,3 +9,6 @@ variable "region" {
 variable "lambdas" {
   type = map(string)
 }
+variable "resource_prefix" {
+  type     = string
+}

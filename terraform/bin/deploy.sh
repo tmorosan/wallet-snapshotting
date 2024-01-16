@@ -4,9 +4,12 @@ set -e
 
 ROOT_DIR=$(pwd)
 LAMBDA_DIR="api/lambda"
-OUTPUT_FILE="${ROOT_DIR}/terraform/lambda.tfvars"
+PROJECT=${PROJECT:-"tmoro-example"}
 
-CONFIG_KEYS=(name memory timeout runtime handler)
+
+#OUTPUT_FILE="${ROOT_DIR}/terraform/lambda.tfvars"
+#
+#CONFIG_KEYS=(name memory timeout runtime handler)
 
 ## Delete lambda.tfvars file if execution fails
 #trap 'echo "[INFO] Deleting lambda.tfvars file"; [[ "$?" == "1" ]] && { echo "help"; rm -f ${OUTPUT_FILE}; }' EXIT
@@ -36,14 +39,27 @@ CONFIG_KEYS=(name memory timeout runtime handler)
 
 build_lambdas () {
   for dir in "$LAMBDA_DIR"/*; do
-    src_dir="$dir/main"
+    src_dir="$dir"
     if [ -d "$src_dir" ]; then
       echo "[INFO] Processing $src_dir"
-
+      local lambda_name
       # run rollup in each directory
 #      (cd "$src_dir" && yarn install --production=false && rollup -c "${ROOT_DIR}/rollup.config.mjs")
       (cd "$src_dir" && sh build.sh)
-      # TO DO: run aws update lambda code with new zip here
+
+      if [[ ! -f "$src_dir/package.zip" ]]; then
+        >&2 echo "Deployment file package.zip not generated as a result of the build"
+        return 1
+      fi
+
+      lambda_name="${PROJECT}-$(jq -r ".name" "$src_dir/config.json")"
+      zip=$(realpath "$src_dir/package.zip")
+      echo -e "Deploying lambda ${lambda_name}\n- Package at ${zip}"
+      aws lambda update-function-code \
+        --function-name "${lambda_name}" \
+        --zip-file "fileb://${zip}" \
+        --no-cli-pager
+
     fi
   done
 }

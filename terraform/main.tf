@@ -32,6 +32,13 @@ module "vpc" {
   availability_zones = var.availability_zones
 }
 
+module "security_group" {
+  source  = "./modules/security_groups"
+  env     = var.env
+  project = var.project
+  vpc_id  = module.vpc.vpc_id
+}
+
 module "dynamodb" {
   source          = "./modules/dynamo"
   env             = var.env
@@ -42,7 +49,8 @@ module "lambda" {
   source            = "./modules/nodejs-lambda"
   region            = var.region
   env               = var.env
-  security_group_id = module.vpc.default_security_group_id
+  # allow HTTPS connections
+  security_group_id = module.security_group.https_sg_id
   subnet_ids        = [for subnet in module.vpc.private_subnets : subnet.id]
   resource_prefix   = var.project
   lambda_configs    = var.lambda_configs
@@ -57,6 +65,7 @@ module "api" {
   source  = "./modules/api"
   env     = var.env
   region  = var.region
+  resource_prefix = var.project
   # change this to list of lambda arns
   lambdas = module.lambda.lambda_arns
 }
