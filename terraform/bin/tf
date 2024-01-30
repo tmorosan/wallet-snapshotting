@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+est=$(command -v envsubst)
+
+if [[ -z "$est" ]]; then
+  >&2 echo "[error]: envsubst not found, please install gettext package"
+  exit 1
+fi
+
+find_project_root () {
+	local current_dir="$PWD"
+	while [[ "$current_dir" != / ]]; do
+		if [[ -f "$current_dir/.tf-project" ]]; then
+			echo "$current_dir"
+			return 0
+		fi
+		current_dir=$(dirname "$current_dir");
+	done
+	return 1
+}
+
+find_first_file () {
+	for file in "$@"; do
+		if [[ -f $file ]]; then
+			echo "$file"
+			return 0
+		fi
+	done
+	return 1
+}
+
+get_terraform_version () {
+	"$tf_bin" version | grep "Terraform" | cut -f 2 -d 'v'
+}
+
+if ! project_root=$(find_project_root); then
+	>&2 echo "[error] failed to detect project root"
+	exit 1
+fi
+
+layer_path="$PWD"
+[[ -n "$LAYER" ]] && { layer_path="$project_root/layers/$LAYER"; }
+[[ ! -d "$project_root/layers/$LAYER" ]] && {
+	>&2 echo "[error] layer dir does not exist: $layer_path";
+	exit 1;
+};
+
+layer="$(basename "$layer_path")"
+env=${ENV:-dev}
+
+tf_bin=${TF_PATH:-terraform}
+if ! command -v "$tf_bin" > /dev/null; then
+	>&2 echo "[error] terraform not available ($tf_bin)"
+	exit 2
+fi
+
+echo "[info] Project root: $project_root"
+echo "[info] Environment: $env"
+echo "[info] Layer: $layer"
+echo "[info] ---"
+echo "[info] Terraform path: $(command -v "$tf_bin")"
+echo "[info] Terraform version: $(get_terraform_version)"
+
+backend_config=()
+if backend_config_file=$(find_first_file "$layer_path/config.tfbackend" "$project_root/config.tfbackend"); then
+	cat "$backend_config_file" | env -i \
+		env="$env" \
+		layer="$layer" \
+		"$est" > "$layer_path/.generated.tfbackend"
+	backend_config=(-backend-config="$layer_path/.generated.tfbackend")
+fi
+
+tf_vars=()
+# tfvars files
+[[ -f "$project_root/project.tfvars" ]] && { tf_vars+=(-var-file="$project_root/project.tfvars"); }
+[[ -f "$project_root/$env.tfvars" ]] && { tf_vars+=(-var-file="$project_root/$env.tfvars"); }
+[[ -f "$layer_path/layer.tfvars" ]] && { tf_vars+=(-var-file="$layer_path/layer.tfvars"); }
+[[ -f "$layer_path/$env.tfvars" ]] && { tf_vars+=(-var-file="$layer_path/$env.tfvars"); }
+# environment
+export TF_VAR_env="$env"
+export TF_VAR_layer="$layer"
+export TF_VAR_aws_region="${AWS_REGION:-"eu-central-1"}"
+
+tf_cmd="$1"
+shift
+
+args=()
+[[ "$layer_path" != "$PWD" ]] && { args+=(-chdir="$layer_path"); }
+args+=("$tf_cmd")
+
+case "$tf_cmd" in
+	# commands that require backend config
+	"init")
+		args+=("${backend_config[@]}")
+    args+=("$@")
+		;;
+  # TO DO: revert this
+	"plan" | "apply" | "destroy" | "console" | "import" | "refresh")
+		args+=("${tf_vars[@]}")
+    args+=("$@")
+		;;
+	# other commands
+	*)
+		args+=("$@")
+		;;
+esac
+
+"$tf_bin" "${args[@]}"
+
+

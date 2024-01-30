@@ -1,0 +1,4 @@
+region="us-west-2"
+bucket="tmoro-tf-remote-state"
+dynamodb_table="tmoro-tf-state-lock"
+key="$env/$layer.tfstate"
