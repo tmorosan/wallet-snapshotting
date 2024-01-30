@@ -18,6 +18,6 @@ lambda_configs = [
     runtime = "nodejs18.x"
   },
   {
-    name = "testResponseTheSecond"
+    name = "getCollectionById"
   },
 ]

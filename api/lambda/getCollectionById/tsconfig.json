@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": "./src",
+    "types": ["node"],
+    "sourceMap": true,
+    "preserveConstEnums": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*.ts", "rollup.config.ts"
+  ],
+  "exclude": ["node_modules", "**/*.test.ts"],
+  "ts-node": {
+    "esm": true
+  }
+}

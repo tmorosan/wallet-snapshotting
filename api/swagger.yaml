@@ -34,25 +34,34 @@ paths:
         httpMethod: "POST"
         type: "AWS_PROXY"
         payloadFormatVersion: "1.0"
-
-#        "/test":
-#          get:
-#            operationId: "test-get-api"
-#            tags:
-#              - "cc-api"
-#            description: "API endpoint example"
-#            responses:
-#              200:
-#                description: "OK Response"
-#                content:
-#                  application/json:
-#                    schema:
-#                      type: object
-#                      properties:
-#                        message:
-#                          type: string
-#            x-amazon-apigateway-integration:
-#              uri: ${lambda_tmoro-example-testResponseLambda}
-#              httpMethod: "GET"
-#              type: "AWS_PROXY"
-#              payloadFormatVersion: "1.0"
+  "/collection/{id}":
+    get:
+      operationId: "test-get-api"
+      tags:
+        - "tmoro-example-api"
+      description: "API get endpoint example"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "ID of the collection"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "OK Response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        404:
+          description: "Not Found"
+      x-amazon-apigateway-integration:
+        uri: ${lambda_tmoro-example-getCollectionById}
+        httpMethod: "GET"
+        type: "AWS_PROXY"
+        payloadFormatVersion: "1.0"
